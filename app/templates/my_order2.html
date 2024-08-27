@@ -1,0 +1,47 @@
+{% extends "hotelhead.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+<!--grid-->
+
+<div class="row">
+<div class="col-md-12 ">
+ <h3 class="text-primary">our orders</h3>
+ 
+   <div class="col-md-12">
+    <table class="table table-responsive table-striped">
+      <tr>
+        <th>Sl. No.</th> <th>User Details</th> <th>order no.</th> <th> order date</th> <th> total amount</th> <th> status </th> <th> Items </th>
+        </tr>
+  {% for d in data %}
+  <tr>
+    <th>{{ forloop.counter }} </th>
+    <th>{{d.user.User_name}}<br>
+      {{d.user.User_address}}<br>
+      {{d.user.User_phone}}</th>
+    
+    <th>{{d.billno}}</th><th>{{d.date}}</th>
+    <th>{{d.total}}</th><th>{{d.order_status}}</th>
+    <th><a href="{% url 'myorderitem1' %}?id={{d.billno}}" class="btn btn-info btn-xs">View</a>
+    {% if d.order_status == "waiting" %}
+      <a href="{% url 'updateorder' %}?id={{d.billno}}" class="btn btn-success btn-xs">update status</a></th>
+{% endif %}
+    </tr>
+     
+     
+     {% endfor %}
+</table>
+  
+                     
+   
+     
+       </div>
+       </div>
+       </div>
+       
+
+{% endblock %}

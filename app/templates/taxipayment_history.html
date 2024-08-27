@@ -1,0 +1,67 @@
+{% extends "taxihead.html" %}
+{% load static %}
+{% block content %}
+
+<section id="main-content" style="min-height: 93vh">
+    <section class="wrapper">
+        <h3>Payment History </h3>
+            <div class="row mt">
+                <div class="col-lg-10">
+                <div class="content-panel" style="padding: 10px">
+                     
+                    <section id="unseen">
+                      <table class="table table-bordered table-striped table-condensed" style="width:100%">
+                        <thead>
+                        <tr>
+                            <th>Sl:No</th>
+                            <th>User Name</th>
+                             <th>Address</th>
+                             <th>Phone</th>
+                            <th>Travel Date</th>
+                            <th>Booking date</th>
+                            <th>Destination</th>
+                            <th>Amount</th>
+                            <th>Kilometer</th>
+                        <!--<th>Action</th>-->
+                        </tr>
+  </thead>
+  <tbody>
+ 
+                        {% for d in data %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{d.userid.username}}
+                                </td>
+                              <td>{{d.userid.useraddress}}</td>
+                                <td>{{d.userid.phoneno}}</td>
+                                <td>{{d.travel_date}}</td>
+                                <td>{{d.booking_date}}</td>
+                                <td>{{d.destination_point}}</td>
+                                <td>{{d.amount}}</td>
+                                <td>{{d.km}}</td>
+                          
+  
+
+
+
+
+
+
+
+                                                  </td>
+  
+</div>
+
+                        </tr>
+                    {% endfor %}							
+                      </tbody>
+                    </table>
+                    </section>
+            </div><!-- /content-panel -->
+         </div><!-- /col-lg-4 -->		   
+        </div><!-- /row -->
+      </section>
+  </section>
+
+
+{% endblock %}

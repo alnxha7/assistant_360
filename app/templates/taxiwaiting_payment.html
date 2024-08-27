@@ -1,0 +1,54 @@
+{% extends "adminhead.html" %}
+{% load static %}
+{% block content %}
+
+
+<section id="main-content" style="min-height: 93vh">
+    <section class="wrapper">
+        <h3>Waiting for payment</h3>
+            <div class="row mt">
+                <div class="col-lg-10">
+                <div class="content-panel" style="padding: 10px">
+                     
+                    <section id="unseen">
+                      <table class="table table-bordered table-striped table-condensed" style="width:100%">
+                        <thead>
+                        <tr>
+                        <th>Sl:No</th>
+                        <th>User Name</th>
+                         <th>Address</th>
+                         <th>Phone</th>
+                        <th>Travel Date</th>
+                        
+                        <th>Taxi driver</th>
+                        <th>Taxi contact no:</th>
+                        <th>Amount</th>
+                        <th>Kilometer</th>
+                        
+                        </tr>
+  </thead>
+  <tbody>
+ 
+                        {% for d in data %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{d.userid.username}}
+                                </td>
+                              <td>{{d.userid.useraddress}}</td>
+                                <td>{{d.userid.phoneno}}</td>
+                            <td>{{d.travel_date}}</td>
+                            <td>{{d.taxiid.name}}</td>
+                            <td>{{d.taxiid.phone_no}}</td>
+                            <td>{{d.amount}}</td>
+                            <td>{{d.km}}</td>
+                        </tr>
+                      {% endfor %}								
+                      </tbody>
+                    </table>
+                    </section>
+            </div><!-- /content-panel -->
+         </div><!-- /col-lg-4 -->	
+        </div><!-- /row -->
+      </section>
+  </section>
+{% endblock %}

@@ -1,0 +1,126 @@
+{% extends "adminhead.html" %}
+{% load static %}
+{% block content %}
+<section id="main-content">
+    <section class="wrapper">
+        <h3><i class="fa fa-angle-right"></i>Vehicle List</h3>
+            <div class="row mt">
+                <div class="col-lg-12">
+                <div class="content-panel" style="">
+                
+                    
+                    <section id="unseen">
+                      <table class="table table-bordered table-striped table-condensed" style="width:1000px;margin-left:30px;" background color="black">
+                        <thead background color="black">
+                        <tr>
+                        <th>Sl:No</th>
+                        <th>Vehicle Model</th>
+                        <th>Vehicle Number</th>
+                        <th>Vehicle Image</th>
+                        <th>Vehicle Insurance</th>
+                        <th>Vehicle Rate</th>
+                        <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for d in data %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{d.v_model}}</td>
+                            <td>{{d.v_number}}</td>
+                            <td><img src="../media/{{d.v_vehicle}}"  style="width:70px;height:70px;"></td>
+                            <td><img src="../media/{{d.v_insurance}}" style="width:70px;height:70px;"></td>
+                            <td>{{d.v_rate}}</td>
+                             <td><div class="btn-group">
+  <button type="button" class="btn btn-info btn-flat">Action</button>
+  <button type="button" class="btn btn-info btn-flat dropdown-toggle" data-toggle="dropdown">
+                                  <span class="caret"></span>
+                                  <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a data-toggle="modal" data-target="#approve-{{d.v_id}}" href="#"><i class="fa fa-trash-o">Approve</i></a></li>
+<li><a data-toggle="modal" data-target="#delete-{{d.v_id}}" href="#"><i class="fa fa-trash-o">Delete</i></a></li>
+                            </ul>
+                                </div>
+                                                  </td>
+   </div>
+
+
+   <div class="modal fade" id="approve-{{d.v_id}}" role="dialog" >
+    <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+      <h4 class="modal-title custom_align" id="Heading">Forward To staff</h4>
+    </div>
+       <div class="modal-body">
+       <br>
+       <h3 class="modal-title custom_align" id="Heading" style="margin-left:200px;color: #333">Are You Sure Want To Forward To staff ?</h3>
+       <br>
+        <form class="form-horizontal" method="post" action="{% url 'listt_vehicle' %}">
+       {% csrf_token %}
+         <input type="hidden" class="form-control"  value="{{d.v_id}}"  name="v_id">
+             
+       <div class="box-content">
+        
+      <button  type="submit"  name="request" class="btn btn-success"><span class="glyphicon 
+      glyphicon-ok-sign"></span>Submit</button>
+          <button type="reset" class="btn btn-default pull-right" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>No</button>
+                          
+    </div>								
+    </div>
+    
+    </form>
+       <div class="modal-footer ">
+      
+    </div> 
+      </div>
+    <!-- /.modal-content --> 
+    </div>
+    </div>
+    
+    
+    
+
+
+
+<div class="modal fade" id="delete-{{d.v_id}}" role="dialog" >
+<div class="modal-dialog modal-lg">
+<div class="modal-content">
+    <div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+  <h4 class="modal-title custom_align" id="Heading">Delete Vehicle</h4>
+</div>
+   <div class="modal-body">
+   <br>
+   <h3 class="modal-title custom_align" id="Heading" style="margin-left:200px;color:#555">Are You Sure Want To Delete This Vehicle?</h3>
+   <br>
+    <form class="form-horizontal" method="post" action="">
+   
+     <input type="hidden" class="form-control"  value="{{d.v_id}}"  name="v_id"> 
+     <div class="box-content">
+   <button name="delete" type="submit" class="btn btn-success" ><span class="glyphicon 
+  glyphicon-ok-sign"></span>Submit</button>
+<button type="reset" class="btn btn-default pull-right" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>No</button>
+                      </div>								
+</div>
+</form>
+   <div class="modal-footer ">
+ </div> 
+  </div>
+</div>
+</div>
+
+                        </tr>
+                        {% endfor %}							
+                      </tbody>
+                    </table>
+                    </section>
+            </div><!-- /content-panel -->
+         </div><!-- /col-lg-4 -->	
+        <div style="min-height:590px;">
+          </div>				   
+        </div><!-- /row -->
+      </section>
+  </section>
+  {% endblock %}
