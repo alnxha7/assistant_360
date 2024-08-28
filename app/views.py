@@ -699,25 +699,23 @@ def payment_request(request):
     datau=usr.objects.get(login=datal)
     msg=""
     if request.POST:
-        t1=request.POST["card"] #card
-        t2=request.POST["holder"] #holder
+        t1=request.POST["card"] #cardnumber
+        t2=request.POST["holder"] #holdername
         t3=request.POST["cvv"] #cvv
-        t4=int(request.POST["amt"]) #amt
-        t5=request.POST["lid"] #userid
+        t4=int(request.POST["amt"]) #amt to pay
+        t5=request.POST["lid"] #labourid
         #t6=request.POST["t6"] #lab
-        bcc=bnk.objects.filter(holder=t2,card=t1,cvv=t3).count()
-        if bcc==1:
-            datb=bnk.objects.get(holder=t2,card=t1,cvv=t3)
-            bal=int(datb.bal)
-            if bal < t4 :
-                msg="insufficient Balance"
-            else:
-                bmt=bal-t4
-                bnk.objects.filter(holder=t2,card=t3,cvv=t4).update(bal=bmt)
-                lb.objects.filter(labour_id=t5).update(status="completed")
-                msg="payment successfull"
-        else :
-            msg="invalid account details"
+
+        try:
+            bnk.objects.create(holder=t2,
+                               card=t1,
+                               cvv=t3
+
+            )
+            lb.objects.filter(labour_id=t5).update(status="completed")
+            return redirect('success')
+        except bnk.DoesNotExist:
+            msg= 'invalid account details'
 
 
     datag=lb.objects.filter(status="paymentrequested",userid=datau).all()
@@ -1050,3 +1048,6 @@ def app_getComplaint(request):
     #feedback_id,userid,feedback,reply
     data=json.dumps(list(datar))
     return HttpResponse(data, content_type="application/json")
+
+def success(request):
+    return render(request, "success.html")

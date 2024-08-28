@@ -130,6 +130,8 @@ path('approve_hotel',views.approve_hotel,name="approve_hotel"),
 path('approved_hotel',views.approved_hotel,name="approved_hotel"),
 path('reject_hotel',views.reject_hotel,name="reject_hotel"),
 
+path('success',views.success,name="success"),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
