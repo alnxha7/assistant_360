@@ -42,6 +42,7 @@ class staff(models.Model):
     district=models.ForeignKey(district, on_delete=models.CASCADE, null=True)
     location=models.ForeignKey(locations, on_delete=models.CASCADE, null=True)
     category=models.CharField("category",max_length=100)
+    blacklisted=models.BooleanField("blacklisted", default=False)
     
     exp=models.CharField("experience",max_length=100)
     basic_salary=models.CharField("basic_salary",max_length=100)
@@ -167,6 +168,12 @@ class bank(models.Model):
     card=models.CharField("card",max_length=100)
     cvv=models.CharField("cvv",max_length=100)
     amount=models.IntegerField("amount", default=0)
+
+class Labour_complaint(models.Model):
+    labour_id=models.AutoField(primary_key=True)
+    userid=models.ForeignKey(user,on_delete=models.CASCADE,null=True)
+    staff=models.ForeignKey(staff,on_delete=models.CASCADE,null=True)
+    complaint=models.CharField("complaint",max_length=500)
     
 
 #bank_id,holder,card,cvv,exp,bal

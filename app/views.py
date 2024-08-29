@@ -1,7 +1,7 @@
-from django.shortcuts import render,HttpResponse,redirect
+from django.shortcuts import render,HttpResponse,redirect, get_object_or_404
 from .models import login as log,state as st,district as dt,locations as loc
 from .models import staff as stf,user as usr,feedback as fd, complaint as cm,labour as lb,taxibooking as taxibk, hotel as hot
-from .models import bank as bnk, menutype as typ, bill as bl, menu as mnu, menustock as mst
+from .models import bank as bnk, menutype as typ, bill as bl, menu as mnu, menustock as mst, Labour_complaint
 from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
 # Create your views here.
@@ -628,7 +628,7 @@ def myorder2(request):
 
 def find_labour(request):
     datas=st.objects.all()
-    data=stf.objects.all()
+    data=stf.objects.filter(blacklisted=False)
     datc=stf.objects.count()
     
     if request.POST:
@@ -1065,3 +1065,38 @@ def app_getComplaint(request):
 
 def success(request):
     return render(request, "success.html")
+
+def labour_complaint(request):
+    id = request.session['id']
+    datal = log.objects.get(logid=id)
+    datau = usr.objects.get(login=datal)
+
+    # Filter labours with status 'completed'
+    labours = lb.objects.filter(userid=datau, status='completed')
+    complaints = Labour_complaint.objects.filter(userid=datau)
+
+    if request.method == 'POST':
+        staff_id = request.POST['staff']
+        complaint_text = request.POST['complaint']
+
+        # Get the selected staff and user
+        selected_staff = stf.objects.get(staff_id=staff_id)
+
+        # Create and save the complaint
+        Labour_complaint.objects.create(userid=datau, staff=selected_staff, complaint=complaint_text)
+
+        # Count the number of complaints against this staff
+        complaint_count = Labour_complaint.objects.filter(staff=selected_staff).count()
+
+        # Blacklist the staff if complaints exceed 3
+        if complaint_count > 3:
+            selected_staff.blacklisted = True
+            selected_staff.save()
+
+    return render(request, 'labour_complaint.html', {'labours': labours, 'complaints': complaints})
+
+def delete_complaint(request, complaint_id):
+    if request.method == 'POST':
+        complaint = get_object_or_404(Labour_complaint, labour_id=complaint_id)
+        complaint.delete()
+    return redirect('labour_complaint')
