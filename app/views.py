@@ -317,6 +317,7 @@ def complaints(request):
         cm.objects.create(staff=datas,sub=t1,msg=t2,reply="not yet Seen")
     data=cm.objects.filter(staff=datas).all()
     return render(request,"complaints.html",{"data":data})
+
 def feedback(request):
     id=request.session['id']
     datal=log.objects.get(logid=id)
@@ -669,18 +670,11 @@ def book_labour(request):
         if is_engaged:
             messages.error(request, "Cannot book; this staff is already engaged.")
         else:
-            lb.objects.create(userid=datau, staff=datastf, from_date=t1, to_date=t2, category=t3, desc=t5, amount=t6, reject="", status="waiting")
+            datas=stf.objects.get(staff_id=t4)
+            lb.objects.create(userid=datau,staff=datas,from_date=t1,to_date=t2,category=t3,desc=t5,amount=t6,reject="",status="waiting")
             messages.success(request, "Booking request sent successfully.")
-            return redirect("/book_labour/?staff=" + staff + "&state=" + state + "&district=" + district + "&location=" + location + "&category=" + category)
-
-    return render(request, "book_labour.html", {
-        "datastf": datastf,
-        "staff": staff,
-        "state": state,
-        "district": district,
-        "location": location,
-        "category": category
-    })
+        
+    return render(request,"book_labour.html",{"datastf":datastf,"staff":staff,"state":state,"district":district,"location":location,"category":category})
 
 
 def staff_ongoing(request):
