@@ -176,5 +176,3 @@ class Labour_complaint(models.Model):
     complaint=models.CharField("complaint",max_length=500)
     
 
-#bank_id,holder,card,cvv,exp,bal
-

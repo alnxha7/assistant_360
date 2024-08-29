@@ -4,6 +4,7 @@ from .models import staff as stf,user as usr,feedback as fd, complaint as cm,lab
 from .models import bank as bnk, menutype as typ, bill as bl, menu as mnu, menustock as mst, Labour_complaint
 from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
+from django.db.models import Count
 # Create your views here.
 
 def index(request):
@@ -1125,3 +1126,23 @@ def edit_booking(request):
             messages.success(request, 'Booking updated successfully.')
             return redirect('schedule')  # Replace with your actual URL name for the schedule page
     return redirect('schedule')
+
+def staff_complaints(request):
+    staff_data = stf.objects.annotate(
+        num_complaints=Count('labour_complaint')
+    ).values(
+        'staff_id', 'photo', 'name', 'category', 'phone_no', 'email', 'blacklisted', 'num_complaints'
+    )
+    return render(request, 'staff_complaints.html', {'staff_data': staff_data})
+
+def remove_blacklist(request, staff_id):
+    staff_member = get_object_or_404(stf, pk=staff_id)
+    staff_member.blacklisted = False
+    staff_member.save()
+    return redirect('staff_complaints')
+
+def make_blacklist(request, staff_id):
+    staff_member = get_object_or_404(stf, pk=staff_id)
+    staff_member.blacklisted = True
+    staff_member.save()
+    return redirect('staff_complaints')

@@ -133,7 +133,10 @@ path('reject_hotel',views.reject_hotel,name="reject_hotel"),
 path('success',views.success,name="success"),
 path("labour_complaint/",views.labour_complaint, name="labour_complaint"),
 path('delete_complaint/<int:complaint_id>/', views.delete_complaint, name='delete_complaint'),
- path('edit_booking/', views.edit_booking, name='edit_booking'),
+path('edit_booking/', views.edit_booking, name='edit_booking'),
+path('staff_complaints/', views.staff_complaints, name='staff_complaints'),
+path('remove_blacklist/<int:staff_id>/', views.remove_blacklist, name='remove_blacklist'),
+path('make_blacklist/<int:staff_id>/', views.make_blacklist, name='make_blacklist'),
 
 ]
 if settings.DEBUG:
