@@ -747,13 +747,9 @@ def ongoing(request):
     datag=lb.objects.filter(status="approved",reject="confirm",staff=datau).all()
     return render(request,"ongoing.html",{"data":datag})
 
-# praveeen
-
 def schedule(request):
     datasb=lb.objects.exclude(status="completed").exclude(status="paymentrequested").exclude(reject="rejected").all()
     return render(request,"schedule.html",{"datakk":datasb})
-
-
 
 def delete_labour(request):
     id=request.POST["labour_id"]
@@ -1100,3 +1096,32 @@ def delete_complaint(request, complaint_id):
         complaint = get_object_or_404(Labour_complaint, labour_id=complaint_id)
         complaint.delete()
     return redirect('labour_complaint')
+
+def edit_booking(request):
+    if request.method == 'POST':
+        labour_id = request.POST['labour_id']
+        from_date = request.POST['from_date']
+        to_date = request.POST['to_date']
+
+        # Get the labour instance being edited
+        labour = lb.objects.get(labour_id=labour_id)
+
+        # Check if the staff is engaged on the new dates
+        staff_engaged = lb.objects.filter(
+            staff=labour.staff,
+            from_date__lte=to_date,
+            to_date__gte=from_date
+        ).exclude(labour_id=labour_id).exists()
+
+        if staff_engaged:
+            # Display alert message if staff is engaged
+            messages.error(request, 'Cannot book; this staff is already engaged on the selected dates.')
+            return redirect('schedule')  # Replace with your actual URL name for the schedule page
+        else:
+            # If not engaged, update the booking
+            labour.from_date = from_date
+            labour.to_date = to_date
+            labour.save()
+            messages.success(request, 'Booking updated successfully.')
+            return redirect('schedule')  # Replace with your actual URL name for the schedule page
+    return redirect('schedule')

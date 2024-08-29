@@ -133,6 +133,7 @@ path('reject_hotel',views.reject_hotel,name="reject_hotel"),
 path('success',views.success,name="success"),
 path("labour_complaint/",views.labour_complaint, name="labour_complaint"),
 path('delete_complaint/<int:complaint_id>/', views.delete_complaint, name='delete_complaint'),
+ path('edit_booking/', views.edit_booking, name='edit_booking'),
 
 ]
 if settings.DEBUG:

@@ -5,6 +5,14 @@
 <section id="main-content">
 	<section class="wrapper">
 	<div class="form-w3layouts">
+
+    {% if messages %}
+    <div class="alert alert-success fade-out">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+{% endif %}
        
         <!-- page start-->
         <!-- page start-->
@@ -25,6 +33,7 @@ $raw=0;
      Booked Labour List
     </div>
     <div>
+
       <table class="table" ui-jq="footable" ui-options='{
         "paging": {
           "enabled": true
@@ -67,10 +76,46 @@ $raw=0;
                                     <td>
                                         {% if d.status == "waiting" %}
                                         <a class="btn btn-success" data-toggle="modal" data-target="#delete-{{d.labour_id}}" href="#">Delete</a>
+                                        <a class="btn btn-info" data-toggle="modal" data-target="#edit-{{ d.labour_id }}">Edit</a>
                                 {% endif %}
                                     </td>
                                    
 </tr> 
+
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="edit-{{ d.labour_id }}" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Edit Booking</h4>
+            </div>
+            <form action="{% url 'edit_booking' %}" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <input type="hidden" name="labour_id" value="{{ d.labour_id }}">
+                    
+                    <div class="form-group">
+                        <label for="from_date">From Date</label>
+                        <input type="date" name="from_date" class="form-control" value="{{ d.from_date }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="to_date">To Date</label>
+                        <input type="date" name="to_date" class="form-control" value="{{ d.to_date }}" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+  </div>
+
+
+
 <div class="modal fade" id="delete-{{d.labour_id}}" role="dialog" >
     <div class="modal-dialog modal-lg">
     <div class="modal-content">
