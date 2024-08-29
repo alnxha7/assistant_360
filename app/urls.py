@@ -139,5 +139,6 @@ path('remove_blacklist/<int:staff_id>/', views.remove_blacklist, name='remove_bl
 path('make_blacklist/<int:staff_id>/', views.make_blacklist, name='make_blacklist'),
 
 ]
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
