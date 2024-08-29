@@ -87,16 +87,16 @@ var Difference_In_Days =Difference_In_Time / (1000 * 3600 * 24);
 //console.log(Difference_In_Days)
 Difference_In_Days=Math.floor(Difference_In_Days)+1;
 document.getElementById('amt').value=eval(c) * eval(Difference_In_Days)
-    
-            
-          
-   
-   
-  
-     
      
     }
-  </script>				
+
+    {% if messages %}
+        {% for message in messages %}
+            alert("{{ message }}");
+        {% endfor %}
+    {% endif %}
+
+  </script>		
 
 
 

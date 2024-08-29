@@ -166,6 +166,7 @@ class bank(models.Model):
     holder=models.CharField("holder",max_length=100)
     card=models.CharField("card",max_length=100)
     cvv=models.CharField("cvv",max_length=100)
+    amount=models.IntegerField("amount", default=0)
     
 
 #bank_id,holder,card,cvv,exp,bal

@@ -3,6 +3,7 @@ from .models import login as log,state as st,district as dt,locations as loc
 from .models import staff as stf,user as usr,feedback as fd, complaint as cm,labour as lb,taxibooking as taxibk, hotel as hot
 from .models import bank as bnk, menutype as typ, bill as bl, menu as mnu, menustock as mst
 from django.core.files.storage import FileSystemStorage
+from django.contrib import messages
 # Create your views here.
 
 def index(request):
@@ -644,28 +645,42 @@ def find_labour(request):
     return render(request,"find_labour.html",{"datas":datas,"data":data,"datc":datc})
 
 def book_labour(request):
-    staff=request.GET["staff"]
-    state=request.GET["state"]
-    district=request.GET["district"]
-    location=request.GET["location"]
-    category=request.GET["category"]
-    datastf=stf.objects.get(staff_id=staff)
-    if request.POST:
-        t1=request.POST["fdate"]
-        t2=request.POST["todate"]
-        t3=request.POST["category"]
-        t4=request.POST["staff"]
-        t5=request.POST["aboutjob"]
-        t6=request.POST["amt"]
-        id=request.session['id']
-        datal=log.objects.get(logid=id)
-        datau=usr.objects.get(login=datal)
-        
-        datas=stf.objects.get(staff_id=t4)
-        lb.objects.create(userid=datau,staff=datas,from_date=t1,to_date=t2,category=t3,desc=t5,amount=t6,reject="",status="waiting")
-        return redirect("/find_labour/")
+    staff = request.GET["staff"]
+    state = request.GET["state"]
+    district = request.GET["district"]
+    location = request.GET["location"]
+    category = request.GET["category"]
+    datastf = stf.objects.get(staff_id=staff)
 
-    return render(request,"book_labour.html",{"datastf":datastf,"staff":staff,"state":state,"district":district,"location":location,"category":category})
+    if request.POST:
+        t1 = request.POST["fdate"]
+        t2 = request.POST["todate"]
+        t3 = request.POST["category"]
+        t4 = request.POST["staff"]
+        t5 = request.POST["aboutjob"]
+        t6 = request.POST["amt"]
+        id = request.session['id']
+        datal = log.objects.get(logid=id)
+        datau = usr.objects.get(login=datal)
+
+        # Check if the staff is already engaged during the selected dates
+        is_engaged = lb.objects.filter(staff_id=t4, from_date__lte=t2, to_date__gte=t1).exists()
+
+        if is_engaged:
+            messages.error(request, "Cannot book; this staff is already engaged.")
+        else:
+            lb.objects.create(userid=datau, staff=datastf, from_date=t1, to_date=t2, category=t3, desc=t5, amount=t6, reject="", status="waiting")
+            messages.success(request, "Booking request sent successfully.")
+            return redirect("/book_labour/?staff=" + staff + "&state=" + state + "&district=" + district + "&location=" + location + "&category=" + category)
+
+    return render(request, "book_labour.html", {
+        "datastf": datastf,
+        "staff": staff,
+        "state": state,
+        "district": district,
+        "location": location,
+        "category": category
+    })
 
 
 def staff_ongoing(request):
@@ -709,18 +724,23 @@ def payment_request(request):
         try:
             bnk.objects.create(holder=t2,
                                card=t1,
-                               cvv=t3
+                               cvv=t3,
+                               amount=t4
 
             )
             lb.objects.filter(labour_id=t5).update(status="completed")
             return redirect('success')
         except bnk.DoesNotExist:
             msg= 'invalid account details'
-
-
+            
     datag=lb.objects.filter(status="paymentrequested",userid=datau).all()
     datac=lb.objects.filter(status="paymentrequested",userid=datau).count()
     return render(request,"payment_request.html",{"data":datag,"datac":datac,"msg":msg})
+
+def payment_history(request):
+    datag=lb.objects.filter(status="completed").all()
+    return render(request,"payment_history.html",{"data":datag})
+
 
 def payment_history(request):
     datag=lb.objects.filter(status="completed").all()
